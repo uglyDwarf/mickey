@@ -1,5 +1,5 @@
 <RCC>
   <qresource prefix="ltr">
-    <file>../linuxtrack.svg</file>
+    <file>linuxtrack.svg</file>
   </qresource>
 </RCC>

@@ -1,9 +1,9 @@
 #include <signal.h>
 #include <assert.h>
 #include <unistd.h>
-#include "../sn4_com.h"
-#include "../utils.h"
-#include "../ipc_utils.h"
+#include "sn4_com.h"
+#include "utils.h"
+#include "ipc_utils.h"
 
 static semaphore_p lock_sem = NULL;
 
