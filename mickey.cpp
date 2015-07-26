@@ -481,6 +481,11 @@ void Mickey::updateTimer_activated()
   int trackingState = linuxtrack_get_tracking_state();
   
   if(lastTrackingState != trackingState){
+    if((lastTrackingState == INITIALIZING) && (trackingState == RUNNING)){
+      //engage the initTimer when starting the tracking; the rest (timeout upon
+      //  unpausing) is handled by the hotkey handler
+      initTimer.start();
+    }
     lastTrackingState = trackingState;
     if(trackingState == RUNNING){
       switch(state){
