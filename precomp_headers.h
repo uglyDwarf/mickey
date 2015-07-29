@@ -44,6 +44,8 @@
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QWidget>
+#ifndef DARWIN
 #include <QX11Info>
+#endif
 #endif
 
