@@ -57,11 +57,12 @@ macx {
   SOURCES += mouse_mac.cpp keyb_mac.cpp
   QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.6
   QMAKE_MAC_SDK=macosx
+  #QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.6.sdk
   CONFIG+=x86_64
   LIBS += -lm -framework ApplicationServices
   help.path += mickey.app/Contents/Resources/linuxtrack/help/mickey
   help.files += help/*
-  INSTALLS += data help
+  INSTALLS += help
   ICON = linuxtrack.icns
   DEFINES += DARWIN
 }

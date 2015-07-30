@@ -530,21 +530,23 @@ void Mickey::updateTimer_activated()
     }
   }
 //  if(linuxtrack_get_pose(&heading, &pitch, &roll, &tx, &ty, &tz, &counter) > 0){
-  if(linuxtrack_get_pose_full(&full_pose, blobs, 3, &blobs_read) > 0){
-    //new frame has arrived
-    /*heading = full_pose.yaw;
-    pitch = full_pose.pitch;
-    roll = full_pose.roll;
-    tx = full_pose.tx;
-    ty = full_pose.ty;
-    tz = full_pose.tz;
-    counter = full_pose.counter;
-    */
-    heading_p = full_pose.raw_yaw;
-    pitch_p = full_pose.raw_pitch;
-    //ui.XLabel->setText(QString("X: %1").arg(heading));
-    //ui.YLabel->setText(QString("Y: %1").arg(pitch));
+  if(linuxtrack_get_pose_full(&full_pose, blobs, 3, &blobs_read) <= 0){
+    //no new pose
+    return;
   }
+  //new frame has arrived
+  /*heading = full_pose.yaw;
+  pitch = full_pose.pitch;
+  roll = full_pose.roll;
+  tx = full_pose.tx;
+  ty = full_pose.ty;
+  tz = full_pose.tz;
+  counter = full_pose.counter;
+  */
+  heading_p = full_pose.raw_yaw;
+  pitch_p = full_pose.raw_pitch;
+  //ui.XLabel->setText(QString("X: %1").arg(heading));
+  //ui.YLabel->setText(QString("Y: %1").arg(pitch));
   int elapsed = updateElapsed.elapsed();
   updateElapsed.restart();
   //reversing signs to get the cursor move according to the head movement
