@@ -3,7 +3,9 @@
 #endif
 
 #include "keyb.h"
-#ifndef DARWIN
+#ifdef DARWIN
+  #include "keyb_mac.h"
+#else
   #include "keyb_x11.h"
 #endif
 
