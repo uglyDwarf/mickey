@@ -28,6 +28,7 @@ bool mouseClass::init()
 bool mouseClass::move(int dx, int dy)
 {
   //Gotcha - when a key is pressed, while moving, emit not mouse moved, but mouse dragged event
+  data->mutex.lock();
   CGEventType event;
   CGEventRef ev_ref;
   CGPoint pos;
