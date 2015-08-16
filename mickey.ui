@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>569</width>
-    <height>415</height>
+    <width>801</width>
+    <height>587</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -54,6 +54,13 @@
             <property name="bottomMargin">
              <number>2</number>
             </property>
+            <item>
+             <widget class="QRadioButton" name="VelocityCB">
+              <property name="text">
+               <string>Velocity</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QRadioButton" name="RelativeCB">
               <property name="text">
@@ -277,7 +284,16 @@
             <enum>QFrame::Raised</enum>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_8">
-            <property name="margin">
+            <property name="leftMargin">
+             <number>2</number>
+            </property>
+            <property name="topMargin">
+             <number>2</number>
+            </property>
+            <property name="rightMargin">
+             <number>2</number>
+            </property>
+            <property name="bottomMargin">
              <number>2</number>
             </property>
             <item>
@@ -502,7 +518,16 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_5">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>1</number>
+      </property>
+      <property name="topMargin">
+       <number>1</number>
+      </property>
+      <property name="rightMargin">
+       <number>1</number>
+      </property>
+      <property name="bottomMargin">
        <number>1</number>
       </property>
       <item>
@@ -682,6 +707,70 @@
     <hint type="destinationlabel">
      <x>92</x>
      <y>193</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>VelocityCB</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>SensSlider</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>103</x>
+     <y>74</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>251</x>
+     <y>115</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>VelocityCB</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>CurveSlider</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>103</x>
+     <y>74</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>251</x>
+     <y>183</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>VelocityCB</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>DZSlider</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>103</x>
+     <y>74</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>251</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>VelocityCB</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>StepOnly</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>103</x>
+     <y>74</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>254</x>
+     <y>248</y>
     </hint>
    </hints>
   </connection>

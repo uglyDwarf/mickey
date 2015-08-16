@@ -171,7 +171,7 @@ void MickeysAxis::revertSettings()
   updatePixmap();
 }
 
-MickeyTransform::MickeyTransform() : accX(0.0), accY(0.0), calibrating(false), axis()
+MickeyTransform::MickeyTransform() : accX(0.0), accY(0.0), calibrating(false), axis(), prevValX(0.0), prevValY(0.0)
 {
   GUI.getMaxVal(maxValX, maxValY);
   prevMaxValX = maxValX;
@@ -216,22 +216,31 @@ static float norm(float val, float limit, float &currentLimit)
 }
 */
 
-void MickeyTransform::update(float valX, float valY, bool relative, int elapsed, float &x, float &y)
+void MickeyTransform::update(float valX, float valY, Mickey::Mode mode, int elapsed, float &x, float &y)
 {
+  if(mode == Mickey::Velocity) {
+    float dx = valX - prevValX;
+    float dy = valY - prevValY;
+    prevValX = valX;
+    prevValY = valY;
+    valX = dx*100;
+    valY = dy*100;
+  }
+
   axis.smooth(valX, valY);
   if(!calibrating){
-    if(relative){
-      axis.step(norm(-valX/maxValX), norm(-valY/maxValY), elapsed, accX, accY);
-      x = accX;
-      accX -= x;
-      y = accY;
-      accY -= y;
-    }else{
-//      x = norm(-valX, maxValX, currMaxValX);
-//      y = norm(-valY, maxValY, currMaxValY);
+    if(mode == Mickey::Absolute){
+      //      x = norm(-valX, maxValX, currMaxValX);
+      //      y = norm(-valY, maxValY, currMaxValY);
       x = norm(-valX / maxValX);
       y = norm(-valY / maxValY);
       //std::cout<<"valX: "<<-valX<<"=> "<<x<<"   Limit: "<<maxValX<<"   CurrentLimit:"<<currMaxValX<<std::endl;
+    }else{
+      axis.step(norm(-valX/maxValX), norm(-valY/maxValY), elapsed, accX, accY);
+      x = accX;
+      y = accY;
+      accX = 0;
+      accY = 0;
     }
   }else{
     if(valX > maxValX){

@@ -63,7 +63,7 @@ class MickeyTransform : public QObject
  public:
   MickeyTransform();
   ~MickeyTransform();
-  void update(float valX, float valY, bool relative, int elapsed, float &x, float &y);
+  void update(float valX, float valY, Mickey::Mode mode, int elapsed, float &x, float &y);
   void startCalibration();
   void finishCalibration();
   void cancelCalibration();
@@ -73,6 +73,7 @@ class MickeyTransform : public QObject
  private:
   float accX, accY;
   bool calibrating;
+  float prevValX, prevValY;
   float maxValX, minValX, maxValY, minValY, prevMaxValX, prevMaxValY;
   float currMaxValX, currMaxValY;
   MickeysAxis axis;

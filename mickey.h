@@ -109,12 +109,14 @@ class Mickey : public QObject
 {
  Q_OBJECT
  public: 
+  enum Mode { Relative, Absolute, Velocity };
+
   Mickey();
   ~Mickey();
   state_t getState() const{return state;};
   void applySettings();
-  void setRelative(bool rel){relative = rel;};
-  bool getRelative(){return relative;};
+  void setMode(Mickey::Mode m){mode = m;};
+  Mickey::Mode getMode(){return mode;};
   void recenter();
   void calibrate();
  private:
@@ -133,7 +135,7 @@ class Mickey : public QObject
   QDesktopWidget *dw;
   QRect screenBBox;
   QPoint screenCenter;
-  bool relative;
+  Mickey::Mode mode;
  private slots:
   void hotKey_activated(int id, bool pressed);
   void updateTimer_activated();
@@ -209,8 +211,9 @@ class MickeyGUI : public QWidget
     {curvature = val; emit axisChanged(); ui.ApplyButton->setEnabled(true);};
   void on_SmoothingSlider_valueChanged(int val)
     {smoothing = val; emit axisChanged(); ui.ApplyButton->setEnabled(true);};
-  void on_RelativeCB_clicked(bool checked){mickey->setRelative(checked);changed = true;};
-  void on_AbsoluteCB_clicked(bool checked){mickey->setRelative(!checked);changed = true;};
+  void on_RelativeCB_clicked(bool checked){mickey->setMode(Mickey::Relative);changed = true;};
+  void on_VelocityCB_clicked(bool checked){mickey->setMode(Mickey::Velocity);changed = true;};
+  void on_AbsoluteCB_clicked(bool checked){mickey->setMode(Mickey::Absolute);changed = true;};
   void on_StepOnly_stateChanged(int state);
   void on_ApplyButton_pressed()
     {changed = true; ui.ApplyButton->setEnabled(false); mickey->applySettings();};
