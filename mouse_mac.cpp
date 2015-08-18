@@ -54,6 +54,7 @@ bool mouseClass::move(int dx, int dy)
 
 bool mouseClass::click(buttons_t buttons, struct timeval ts)
 {
+  (void) ts;
   data->mutex.lock();
   buttons_t changed = (buttons_t)(buttons ^ data->pressed);
   CGEventType event;

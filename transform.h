@@ -73,10 +73,10 @@ class MickeyTransform : public QObject
  private:
   float accX, accY;
   bool calibrating;
+  MickeysAxis axis;
   float prevValX, prevValY;
   float maxValX, minValX, maxValY, minValY, prevMaxValX, prevMaxValY;
   float currMaxValX, currMaxValY;
-  MickeysAxis axis;
 };
 
 
