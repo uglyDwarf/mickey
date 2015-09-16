@@ -237,10 +237,11 @@ void MickeyTransform::update(float valX, float valY, Mickey::Mode mode, int elap
       //std::cout<<"valX: "<<-valX<<"=> "<<x<<"   Limit: "<<maxValX<<"   CurrentLimit:"<<currMaxValX<<std::endl;
     }else{
       axis.step(norm(-valX/maxValX), norm(-valY/maxValY), elapsed, accX, accY);
-      x = accX;
-      y = accY;
-      accX = 0;
-      accY = 0;
+      // buffer up small changes until they reach integer values
+      x = floor(accX);
+      y = floor(accY);
+      accX -= x;
+      accY -= y;
     }
   }else{
     if(valX > maxValX){
