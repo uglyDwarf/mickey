@@ -5,12 +5,14 @@
 #include <QDesktopWidget>
 #include <ApplicationServices/ApplicationServices.h>
 
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
+
 struct mouseLocalData{
   mouseLocalData():pressed((buttons_t)0){}
   buttons_t pressed;
   QMutex mutex;
 };
-
 
 mouseClass::mouseClass(){
   data = new mouseLocalData();
@@ -36,13 +38,15 @@ bool mouseClass::move(int dx, int dy)
   pos.x = currentPos.x() + dx;
   pos.y = currentPos.y() + dy;
   
-  if(data->pressed == 0){
-    event = kCGEventMouseMoved;
-  }else if(data->pressed & LEFT_BUTTON){
+  int pressed = [NSEvent pressedMouseButtons];
+  if(pressed & LEFT_BUTTON){
     event = kCGEventLeftMouseDragged;
-  }else if(data->pressed & RIGHT_BUTTON){
+  } else if(pressed & RIGHT_BUTTON){
     event = kCGEventRightMouseDragged;
+  } else {
+    event = kCGEventMouseMoved;
   }
+
   ev_ref = CGEventCreateMouseEvent(NULL, event, pos, 0);
   CGEventPost(kCGHIDEventTap, ev_ref);
   CFRelease(ev_ref);
