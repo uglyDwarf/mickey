@@ -4,9 +4,27 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <ApplicationServices/ApplicationServices.h>
+#include <QGuiApplication>
+#include <QtGlobal>
+#include <QScreen>
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
+
+static QPoint confineToScreen(QPoint p) {
+  // TODO: This function doesn't work perfectly for multiple screens because finding the closest point
+  // on the boundary of multiple rectangles would take a while to figure out.
+  // This allows it to kind of work by accepting points that are in non-primary screen.
+  foreach (QScreen *screen, QGuiApplication::screens()) {
+    if(screen->geometry().contains(p)) return p;
+  }
+
+  QRect geom = QGuiApplication::primaryScreen()->geometry();
+  QPoint res;
+  res.setX(qMax(geom.left(), qMin(p.x(), geom.right())));
+  res.setY(qMax(geom.top(), qMin(p.y(), geom.bottom())));
+  return res;
+}
 
 struct mouseLocalData{
   mouseLocalData():pressed((buttons_t)0){}
@@ -33,10 +51,9 @@ bool mouseClass::move(int dx, int dy)
   data->mutex.lock();
   CGEventType event;
   CGEventRef ev_ref;
-  CGPoint pos;
-  QPoint currentPos = QCursor::pos();
-  pos.x = currentPos.x() + dx;
-  pos.y = currentPos.y() + dy;
+  QPoint pos = QCursor::pos();
+  pos = QPoint(pos.x() + dx, pos.y() + dy);
+  pos = confineToScreen(pos);
   
   int pressed = [NSEvent pressedMouseButtons];
   if(pressed & LEFT_BUTTON){
@@ -47,11 +64,11 @@ bool mouseClass::move(int dx, int dy)
     event = kCGEventMouseMoved;
   }
 
-  ev_ref = CGEventCreateMouseEvent(NULL, event, pos, 0);
+  ev_ref = CGEventCreateMouseEvent(NULL, event, CGPointMake(pos.x(),pos.y()), 0);
   CGEventPost(kCGHIDEventTap, ev_ref);
   CFRelease(ev_ref);
   
-  QCursor::setPos(pos.x, pos.y);
+  QCursor::setPos(pos.x(), pos.y());
   data->mutex.unlock();
   return true;
 }
