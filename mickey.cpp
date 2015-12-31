@@ -551,13 +551,13 @@ void Mickey::updateTimer_activated()
   updateElapsed.restart();
   //reversing signs to get the cursor move according to the head movement
   float dx, dy;
-  trans->update(heading_p, pitch_p, relative, elapsed, dx, dy);
+  trans->update(heading_p, pitch_p, mode, elapsed, dx, dy);
   if(state == TRACKING){
-    if(relative){
+    if(mode != Mickey::Absolute){
       int idx = (int)dx;
       int idy = (int)dy;
       if((idx != 0) || (idy != 0)){
-        mouse.move((int)dx, (int)dy);
+        mouse.move(idx, idy);
         //QPoint pos = QCursor::pos();
         //pos += QPoint(dx,dy);
         //QCursor::setPos(pos);
@@ -677,14 +677,14 @@ MickeyGUI::~MickeyGUI()
 void MickeyGUI::readPrefs()
 {
   //Axes setup
-  bool relative;
+  Mickey::Mode mode;
   settings.beginGroup(QString::fromUtf8("Axes"));
   deadzone = settings.value(QString::fromUtf8("DeadZone"), 20).toInt();
   sensitivity = settings.value(QString::fromUtf8("Sensitivity"), 50).toInt();
   curvature = settings.value(QString::fromUtf8("Curvature"), 50).toInt();
   smoothing = settings.value(QString::fromUtf8("Smoothing"), 33).toInt();
   stepOnly = settings.value(QString::fromUtf8("StepOnly"), false).toBool();
-  relative = settings.value(QString::fromUtf8("Relative"), true).toBool();
+  mode = (Mickey::Mode)settings.value(QString::fromUtf8("Mode"), (int)Mickey::Relative).toInt();
   ui.SensSlider->setValue(sensitivity);
   ui.DZSlider->setValue(deadzone);
   ui.CurveSlider->setValue(curvature);
@@ -695,9 +695,11 @@ void MickeyGUI::readPrefs()
   }else{
     ui.CurveSlider->setEnabled(true);
   }
-  if(relative){
+  if(mode == Mickey::Relative){
     ui.RelativeCB->setChecked(true);
-  }else{
+  }else if(mode == Mickey::Velocity) {
+    ui.VelocityCB->setChecked(true);
+  }else {
     ui.AbsoluteCB->setChecked(true);
     ui.SensSlider->setDisabled(true);
     ui.DZSlider->setDisabled(true);
@@ -757,7 +759,7 @@ void MickeyGUI::storePrefs()
   settings.setValue(QString::fromUtf8("Curvature"), curvature);
   settings.setValue(QString::fromUtf8("Smoothing"), smoothing);
   settings.setValue(QString::fromUtf8("StepOnly"), stepOnly);
-  settings.setValue(QString::fromUtf8("Relative"), mickey->getRelative());
+  settings.setValue(QString::fromUtf8("Mode"), (int)(mickey->getMode()));
   settings.endGroup();
   
   //trans setup
@@ -851,7 +853,13 @@ void MickeyGUI::init()
 			   2, this, mickey, ui.HotkeyStack, &settings, 4, 2);
   settings.endGroup();
   ui.ApplyButton->setEnabled(false);
-  mickey->setRelative(ui.RelativeCB->isChecked());
+  if(ui.RelativeCB->isChecked()) {
+    mickey->setMode(Mickey::Relative);
+  } else if(ui.VelocityCB->isChecked()) {
+    mickey->setMode(Mickey::Velocity);
+  } else {
+    mickey->setMode(Mickey::Absolute);
+  }
   changed = false;
 }
   

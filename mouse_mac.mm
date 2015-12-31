@@ -4,13 +4,33 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <ApplicationServices/ApplicationServices.h>
+#include <QGuiApplication>
+#include <QtGlobal>
+#include <QScreen>
+
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
+
+static QPoint confineToScreen(QPoint p) {
+  // TODO: This function doesn't work perfectly for multiple screens because finding the closest point
+  // on the boundary of multiple rectangles would take a while to figure out.
+  // This allows it to kind of work by accepting points that are in non-primary screen.
+  foreach (QScreen *screen, QGuiApplication::screens()) {
+    if(screen->geometry().contains(p)) return p;
+  }
+
+  QRect geom = QGuiApplication::primaryScreen()->geometry();
+  QPoint res;
+  res.setX(qMax(geom.left(), qMin(p.x(), geom.right())));
+  res.setY(qMax(geom.top(), qMin(p.y(), geom.bottom())));
+  return res;
+}
 
 struct mouseLocalData{
   mouseLocalData():pressed((buttons_t)0){}
   buttons_t pressed;
   QMutex mutex;
 };
-
 
 mouseClass::mouseClass(){
   data = new mouseLocalData();
@@ -31,29 +51,31 @@ bool mouseClass::move(int dx, int dy)
   data->mutex.lock();
   CGEventType event;
   CGEventRef ev_ref;
-  CGPoint pos;
-  QPoint currentPos = QCursor::pos();
-  pos.x = currentPos.x() + dx;
-  pos.y = currentPos.y() + dy;
+  QPoint pos = QCursor::pos();
+  pos = QPoint(pos.x() + dx, pos.y() + dy);
+  pos = confineToScreen(pos);
   
-  if(data->pressed == 0){
-    event = kCGEventMouseMoved;
-  }else if(data->pressed & LEFT_BUTTON){
+  int pressed = [NSEvent pressedMouseButtons];
+  if(pressed & LEFT_BUTTON){
     event = kCGEventLeftMouseDragged;
-  }else if(data->pressed & RIGHT_BUTTON){
+  } else if(pressed & RIGHT_BUTTON){
     event = kCGEventRightMouseDragged;
+  } else {
+    event = kCGEventMouseMoved;
   }
-  ev_ref = CGEventCreateMouseEvent(NULL, event, pos, 0);
+
+  ev_ref = CGEventCreateMouseEvent(NULL, event, CGPointMake(pos.x(),pos.y()), 0);
   CGEventPost(kCGHIDEventTap, ev_ref);
   CFRelease(ev_ref);
   
-  QCursor::setPos(pos.x, pos.y);
+  QCursor::setPos(pos.x(), pos.y());
   data->mutex.unlock();
   return true;
 }
 
 bool mouseClass::click(buttons_t buttons, struct timeval ts)
 {
+  (void) ts;
   data->mutex.lock();
   buttons_t changed = (buttons_t)(buttons ^ data->pressed);
   CGEventType event;
