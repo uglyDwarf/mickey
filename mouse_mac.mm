@@ -64,7 +64,7 @@ bool mouseClass::move(int dx, int dy)
     event = kCGEventMouseMoved;
   }
 
-  ev_ref = CGEventCreateMouseEvent(NULL, event, CGPointMake(pos.x(),pos.y()), 0);
+  ev_ref = CGEventCreateMouseEvent(NULL, event, CGPointMake(pos.x(),pos.y()), kCGMouseButtonLeft);
   CGEventPost(kCGHIDEventTap, ev_ref);
   CFRelease(ev_ref);
   
@@ -90,7 +90,7 @@ bool mouseClass::click(buttons_t buttons, struct timeval ts)
     }else{
       event = kCGEventLeftMouseUp;
     }
-    ev_ref = CGEventCreateMouseEvent(NULL, event, pos, 0);
+    ev_ref = CGEventCreateMouseEvent(NULL, event, pos, kCGMouseButtonLeft);
     CGEventPost(kCGHIDEventTap, ev_ref);
     CFRelease(ev_ref);
   }
@@ -100,7 +100,7 @@ bool mouseClass::click(buttons_t buttons, struct timeval ts)
     }else{
       event = kCGEventRightMouseUp;
     }
-    CGEventCreateMouseEvent(NULL, event, pos, 0);
+    CGEventCreateMouseEvent(NULL, event, pos, kCGMouseButtonLeft);
     CGEventPost(kCGHIDEventTap, ev_ref);
     CFRelease(ev_ref);
   }
