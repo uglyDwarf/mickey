@@ -33,6 +33,11 @@ struct mouseLocalData{
 };
 
 mouseClass::mouseClass(){
+  // Without this line, App Nap will eventually activate, stopping tracking.
+  // Even worse, it seems to reactivate on click events, but without data, moving the mouse to (0,0)
+  // This doesn't keep track of the activity, because we never need to disable it.
+  [[NSProcessInfo processInfo] beginActivityWithOptions: NSActivityUserInitiated reason:@"Head Tracking"];
+
   data = new mouseLocalData();
 }
   
