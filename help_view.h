@@ -1,7 +1,7 @@
 #include <QWidget>
 #include <QFile>
 #include <QTextStream>
-#include <QWebView>
+//#include <QWebView>
 #include <QSplitter>
 #include <QListWidget>
 #include "ui_logview.h"
@@ -32,7 +32,7 @@ class HelpViewer : public QWidget{
   void addPage(QString name, QString page);
   bool ReadContents();
   Ui::LogViewerForm ui;
-  QWebView *viewer;
+//  QWebView *viewer;
   QListWidget *contents;
   QHBoxLayout *layout;
   QSplitter *splitter;

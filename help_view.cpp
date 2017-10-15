@@ -50,7 +50,7 @@ void HelpViewer::ChangeHelpPage(QString name)
 {
   QString tmp = QString::fromUtf8("file://") + getDataPath(QString::fromUtf8("/help/") + 
                   QString::fromUtf8(HELP_BASE) + name);
-  viewer->load(QUrl(tmp));
+//  viewer->load(QUrl(tmp));
 }
 
 void HelpViewer::CloseWindow()
@@ -80,20 +80,20 @@ HelpViewer::HelpViewer(QWidget *parent) : QWidget(parent), contents(NULL), layou
 {
   ui.setupUi(this);
   setWindowTitle(QString::fromUtf8("Help viewer"));
-  viewer = new QWebView(this);
+//  viewer = new QWebView(this);
   contents = new QListWidget(this);
   ReadContents();
   layout = new QHBoxLayout();
   splitter = new QSplitter();
   layout->addWidget(splitter);
   splitter->addWidget(contents);
-  splitter->addWidget(viewer);
+//  splitter->addWidget(viewer);
   ui.verticalLayout->insertLayout(0, layout);
   QObject::connect(contents, SIGNAL(currentTextChanged(const QString &)), 
                    this, SLOT(currentTextChanged(const QString &)));
   
-  QObject::connect(viewer, SIGNAL(linkClicked(const QUrl&)), this, SLOT(followLink(const QUrl&)));
-  viewer->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+//  QObject::connect(viewer, SIGNAL(linkClicked(const QUrl&)), this, SLOT(followLink(const QUrl&)));
+//  viewer->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
 }
 
 bool HelpViewer::ReadContents()
@@ -141,7 +141,7 @@ void HelpViewer::followLink(const QUrl &url)
   if(QString::fromUtf8("http").compare(url.scheme(), Qt::CaseInsensitive) == 0){
     QDesktopServices::openUrl(url);
   }else{
-    viewer->load(url);
+//    viewer->load(url);
   }
 }
 
@@ -149,9 +149,9 @@ HelpViewer::~HelpViewer()
 {
   ui.verticalLayout->removeItem(layout);
   layout->removeWidget(contents);
-  layout->removeWidget(viewer);
+//  layout->removeWidget(viewer);
   delete(layout);
   delete(contents);
-  delete(viewer);
+//  delete(viewer);
 }
 

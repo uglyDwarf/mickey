@@ -6,9 +6,9 @@ CONFIG += qt debug warn_on precompile_header
 TEMPLATE = app
 TARGET = mickey
 DEPENDPATH += .
-QT += webkit
+# QT += webkit
 contains(QT_VERSION, ^5.*){
-       QT += webkitwidgets widgets
+       QT += widgets
        DEFINES += QT5_OVERRIDES
 }
 
